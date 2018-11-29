@@ -43,6 +43,14 @@ default[:aem][:aem_options] = {
   'CQ_PERMGEN' => '128'
 }
 
+# Enable and configure author to listen on HTTPS and optionally disable http
+default[:aem][:author][:http_disabled] = false
+default[:aem][:author][:ssl_enabled] = false
+default[:aem][:author][:ssl_port] = nil
+default[:aem][:author][:keystore_p12_base64] = nil
+default[:aem][:author][:keystore_path] = nil
+default[:aem][:author][:keystore_password] = nil
+
 # These work in such a way that the providers will find the closest matching command using the provided
 # node[:aem][:version]. The command matching the given version without going over will be used.
 # For example, if node[:aem][:version] is 5.5, then node[:aem][:commands][:replicators][:publish][:add]['5.4']
@@ -124,11 +132,17 @@ default[:aem][:author] = {
     enabled: false,
     options: {}
   },
-  validation_urls: [
+  http_validation_urls: [
     'http://localhost:4502/libs/cq/core/content/login.html',
     'http://localhost:4502/damadmin',
     'http://localhost:4502/miscadmin',
     'http://localhost:4502/system/console/bundles'
+  ],
+  https_validation_urls: [
+      'https://localhost:8443/libs/cq/core/content/login.html',
+      'https://localhost:8443/damadmin',
+      'https://localhost:8443/miscadmin',
+      'https://localhost:8443/system/console/bundles'
   ],
   deploy_pkgs: [
     #  { :name => "your package name here",

@@ -57,6 +57,18 @@ aem_init 'aem-author' do
   action :add
 end
 
+if node[:aem][:author][:ssl_enabled] == 'true'
+  aem_felix_http_config 'aem-author' do
+    http_disabled node[:aem][:author][:http_disabled]
+    ssl_enabled node[:aem][:author][:ssl_enabled]
+    ssl_port node[:aem][:author][:ssl_port]
+    keystore_pkcs12_base64 node[:aem][:author][:keystore_pkcs12_base64]
+    keystore_path node[:aem][:author][:keystore_path]
+    keystore_password node[:aem][:author][:keystore_password]
+    action :configure
+  end
+end
+
 service 'aem-author' do
   # init script returns 0 for status no matter what
   status_command 'service aem-author status | grep running'
@@ -65,6 +77,11 @@ service 'aem-author' do
 end
 
 if node[:aem][:version].to_f > 5.4
+  if node[:aem][:author][:ssl_enabled] == 'true'
+    node.default[:aem][:author][:validation_urls] = node[:aem][:author][:https_validation_urls]
+  else
+    node.default[:aem][:author][:validation_urls] = node[:aem][:author][:http_validation_urls]
+  end
   node[:aem][:author][:validation_urls].each do |url|
     aem_url_watcher url do
       validation_url url

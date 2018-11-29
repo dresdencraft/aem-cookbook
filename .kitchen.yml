@@ -6,9 +6,10 @@ driver:
 
 provisioner:
   name: chef_zero
+  require_chef_omnibus: 12
 
 platforms:
-  - name: centos-6.5
+  - name: centos-6.8
 
 suites:
   - name: author-6.1.0-oraclejdk8
@@ -22,8 +23,33 @@ suites:
         version: '6.1.0'
         download_url: <%= ENV['AEM_DOWNLOAD_URL_610'] %>
         license_url: <%= ENV['AEM_LICENSE_URL_610'] %>
-        aem_options: 
+        aem_options:
           CQ_HEAP_MAX: '1024'
+      java:
+        install_flavor: 'oracle'
+        jdk_version: '8'
+        oracle:
+          accept_oracle_download_terms: true
+  - name: author-6.1.0-felix-http-config-oraclejdk8
+    driver:
+      customize:
+        memory: '2560'
+    run_list:
+      - recipe[aem::_license]
+      - recipe[aem::author]
+    attributes:
+      aem:
+        version: '6.1.0'
+        download_url: 'https://s3.amazonaws.com/vw-cq/AEM_6.4_Quickstart.jar'
+        aem_options:
+          CQ_HEAP_MAX: '1024'
+        author:
+          ssl_enabled: 'true'
+          http_disabled: 'true'
+          ssl_port: 8443
+          keystore_pkcs12_base64: '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'
+          keystore_path: '/opt/aem/keystore.p12'
+          keystore_password: 'test'
       java:
         install_flavor: 'oracle'
         jdk_version: '8'
@@ -40,7 +66,7 @@ suites:
         version: '6.1.0'
         download_url: <%= ENV['AEM_DOWNLOAD_URL_610'] %>
         license_url: <%= ENV['AEM_LICENSE_URL_610'] %>
-        aem_options: 
+        aem_options:
           CQ_HEAP_MAX: '1024'
       java:
         install_flavor: 'oracle'
@@ -59,7 +85,7 @@ suites:
         version: '6.1.0'
         download_url: <%= ENV['AEM_DOWNLOAD_URL_610'] %>
         license_url: <%= ENV['AEM_LICENSE_URL_610'] %>
-        aem_options: 
+        aem_options:
           CQ_HEAP_MAX: '1024'
         author:
           startup:
@@ -182,7 +208,6 @@ suites:
         jdk_version: '7'
         oracle:
           accept_oracle_download_terms: true
-
 
   - name: author-5.6.0-oraclejdk6
     driver:
