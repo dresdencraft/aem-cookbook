@@ -1,13 +1,13 @@
 require 'base64'
 
 action :configure do
-  directory "#{node['aem']['author']['base_dir']}}"/install do
+  directory "#{node['aem']['author']['base_dir']}/install" do
     owner node[:aem][:aem_options]['RUNAS_USER']
     group node[:aem][:aem_options]['RUNAS_USER']
     mode '0755'
     action :create
   end
-  if new_resource.ssl_enabled == 'true'
+  if new_resource.ssl_enabled
     template "#{node['aem']['author']['base_dir']}/install/org.apache.felix.http.config" do
       source 'org.apache.felix.http.config.erb'
       notifies :restart, "service[aem-author]"
@@ -19,7 +19,7 @@ action :configure do
         keystore_password: new_resource.keystore_password
       )
     end
-    file "#{node['aem']['author']['base_dir']}/../keystore.pkcs12" do
+    file new_resource.keystore_path do
       content Base64.decode64(new_resource.keystore_pkcs12_base64)
       mode '0440'
       owner node[:aem][:aem_options]['RUNAS_USER']

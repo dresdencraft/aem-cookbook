@@ -1,4 +1,4 @@
-<% if @ssl_enabled == 'true' %>
+<% if @ssl_enabled %>
 org.apache.felix.https.enable="<%= @ssl_enabled %>"
 <% end %>
 <% if @ssl_port %>
@@ -10,6 +10,6 @@ org.apache.felix.https.keystore="<%= @keystore_path %>"
 <% if @keystore_password %>
 org.apache.felix.https.keystore.password="<%= @keystore_password %>"
 <% end %>
-<% if @http_disabled == 'true' %>
+<% if @http_disabled %>
 org.apache.felix.http.enable=B"false"
 <% end %>
