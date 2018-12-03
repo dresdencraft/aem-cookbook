@@ -42,7 +42,7 @@ suites:
     attributes:
       aem:
         version: '6.1.0'
-        download_url: 'https://s3.amazonaws.com/vw-cq/AEM_6.4_Quickstart.jar'
+        download_url: <Add URL HERE>
         aem_options:
           CQ_HEAP_MAX: '1024'
         author:
