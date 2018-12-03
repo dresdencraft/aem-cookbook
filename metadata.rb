@@ -1,7 +1,7 @@
 maintainer 'Tacit Knowledge, Inc.'
 maintainer_email 'aem-cookbook-dev@googlegroups.com'
 license 'Apache 2.0'
-name 'aem'
+name 'dresden-aem'
 description 'Installs/Configures Adobe AEM'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
