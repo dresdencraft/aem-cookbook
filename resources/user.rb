@@ -24,7 +24,7 @@ attribute :user, kind_of: String, name_attribute: true
 attribute :password, kind_of: String, default: nil
 attribute :admin_user, kind_of: String, default: nil
 attribute :admin_password, kind_of: String, default: nil
-attribute :author_protocol, kind_of: String, default: 'http'
+attribute :protocol, kind_of: String, default: 'http'
 attribute :port, kind_of: String, default: nil
 attribute :aem_version, kind_of: String, default: node[:aem][:version]
 attribute :path, kind_of: String, default: nil # the path to the user in AEM

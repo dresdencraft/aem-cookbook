@@ -46,6 +46,7 @@ default[:aem][:aem_options] = {
 # Enable and configure author to listen on HTTPS and optionally disable http
 default[:aem][:author][:http_disabled] = false
 default[:aem][:author][:ssl_enabled] = false
+default[:aem][:author][:protocol] = 'http'
 default[:aem][:author][:ssl_port] = nil
 default[:aem][:author][:keystore_p12_base64] = nil
 default[:aem][:author][:keystore_password] = nil
@@ -83,7 +84,7 @@ default[:aem][:commands] = {
       },
       list: {
         '5.4' => 'curl -k -u <%=local_user%>:<%=local_password%> http://localhost:<%=local_port%>/etc/replication.infinity.json',
-        '6.4' => 'curl -k -u <%=local_user%>:<%=local_password%> http://localhost:<%=local_port%>/etc/replication/agents.<%=agent%>.infinity.json'
+        '6.4' => 'curl -k -u <%=local_user%>:<%=local_password%> <%=local_protocol%>://localhost:<%=local_port%>/etc/replication/agents.<%=agent%>.infinity.json'
       }
     }
   },

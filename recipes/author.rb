@@ -108,7 +108,7 @@ unless node[:aem][:author][:new_admin_password].nil?
     password node[:aem][:author][:new_admin_password]
     admin_user node[:aem][:author][:admin_user]
     admin_password node[:aem][:author][:admin_password]
-    author_protocol node[:aem][:author][:author_protocol] if node[:aem][:author][:ssl_enabled]
+    protocol node[:aem][:author][:protocol] if node[:aem][:author][:ssl_enabled]
     port node[:aem][:author][:port]
     aem_version node[:aem][:version]
     action :set_password
@@ -123,7 +123,7 @@ node[:aem][:geometrixx_priv_users].each do |user|
   aem_user user do
     admin_user node[:aem][:author][:admin_user]
     admin_password lazy { node[:aem][:author][:admin_password] }
-    author_protocol node[:aem][:author][:author_protocol] if node[:aem][:author][:ssl_enabled]
+    protocol node[:aem][:author][:protocol] if node[:aem][:author][:ssl_enabled]
     port node[:aem][:author][:port]
     aem_version node[:aem][:version]
     path '/home/users/geometrixx'
@@ -178,6 +178,7 @@ end
 aem_replicator 'delete_extra_replication_agents' do
   local_user node[:aem][:author][:admin_user]
   local_password lazy { node[:aem][:author][:admin_password] }
+  local_protocol node[:aem][:author][:protocol] if node[:aem][:author][:ssl_enabled]
   local_port node[:aem][:author][:port]
   remote_hosts node[:aem][:author][:replication_hosts]
   dynamic_cluster node[:aem][:author][:find_replication_hosts_dynamically]
