@@ -33,22 +33,22 @@ def set_vars
   vars[:password] = new_resource.password
   vars[:port] = new_resource.port
   vars[:group_id] = new_resource.group_id
-  vars[:upload_cmd] = "curl -s -S -u #{vars[:user]}:#{vars[:password]} -F" \
+  vars[:upload_cmd] = "curl -k -s -S -u #{vars[:user]}:#{vars[:password]} -F" \
                       " package=@#{vars[:file_path]} http://localhost:" \
                       "#{vars[:port]}/crx/packmgr/service/.json?cmd=upload"
-  vars[:delete_cmd] = "curl -s -S -u #{vars[:user]}:#{vars[:password]} -X" \
+  vars[:delete_cmd] = "curl -k -s -S -u #{vars[:user]}:#{vars[:password]} -X" \
                       " POST http://localhost:#{vars[:port]}/crx/packmgr/" \
                       "service/.json/etc/packages/#{vars[:group_id]}/" \
                       "#{vars[:file_name]}?cmd=delete"
-  vars[:install_cmd] = "curl -s -S -u #{vars[:user]}:#{vars[:password]} -X" \
+  vars[:install_cmd] = "curl -k -s -S -u #{vars[:user]}:#{vars[:password]} -X" \
                        " POST http://localhost:#{vars[:port]}/crx/packmgr/" \
                        "service/.json/etc/packages/#{vars[:group_id]}/" \
                        "#{vars[:file_name]}?cmd=install#{vars[:recursive]}"
-  vars[:activate_cmd] = "curl -s -S -u #{vars[:user]}:#{vars[:password]} -X" \
+  vars[:activate_cmd] = "curl -k -s -S -u #{vars[:user]}:#{vars[:password]} -X" \
                        " POST http://localhost:#{vars[:port]}/crx/packmgr/" \
                        "service/.json/etc/packages/#{vars[:group_id]}/" \
                        "#{vars[:file_name]}?cmd=replicate"
-  vars[:uninstall_cmd] = "curl -s -S -u #{vars[:user]}:#{vars[:password]} -X" \
+  vars[:uninstall_cmd] = "curl -k -s -S -u #{vars[:user]}:#{vars[:password]} -X" \
                        " POST http://localhost:#{vars[:port]}/crx/packmgr/" \
                        "service/.json/etc/packages/#{vars[:group_id]}/" \
                        "#{vars[:file_name]}?cmd=uninstall"

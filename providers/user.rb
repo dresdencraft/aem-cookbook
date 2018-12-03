@@ -38,12 +38,13 @@ def curl(url, user, password)
   c.http_auth_types = :basic
   c.username = user
   c.password = password
+  c.ssl_verify_peer=false
   c.perform
   c
 end
 
 def get_usr_path(port, user, admin_user, admin_password)
-  url_user = "http://localhost:#{port}/bin/querybuilder.json?path=/home/users&1_property=rep:authorizableId&1_property.value=#{user}&p.limit=-1"
+  url_user = "#{new_resource.author_protocol}://localhost:#{port}/bin/querybuilder.json?path=/home/users&1_property=rep:authorizableId&1_property.value=#{user}&p.limit=-1"
   c = curl(url_user, admin_user, admin_password)
   usr_json = JSON.parse(c.body_str)
 

@@ -64,7 +64,24 @@ service 'aem-author' do
   action [:enable, :start]
 end
 
+if node[:aem][:author][:ssl_enabled]
+  aem_felix_http_config 'felix_http_config' do
+    http_disabled node[:aem][:author][:http_disabled]
+    ssl_enabled node[:aem][:author][:ssl_enabled]
+    ssl_port node[:aem][:author][:ssl_port]
+    keystore_pkcs12_base64 node[:aem][:author][:keystore_pkcs12_base64]
+    keystore_path "#{node['aem']['author']['base_dir']}/../keystore.pkcs12"
+    keystore_password node[:aem][:author][:keystore_password]
+    action :configure
+  end
+end
+
 if node[:aem][:version].to_f > 5.4
+  if node[:aem][:author][:ssl_enabled]
+    node.default[:aem][:author][:validation_urls] = node[:aem][:author][:https_validation_urls]
+  else
+    node.default[:aem][:author][:validation_urls] = node[:aem][:author][:http_validation_urls]
+  end
   node[:aem][:author][:validation_urls].each do |url|
     aem_url_watcher url do
       validation_url url
@@ -83,12 +100,15 @@ else
   end
 end
 
+node.default[:aem][:author][:port] = node[:aem][:author][:ssl_port].to_s if node[:aem][:author][:ssl_enabled]
+
 unless node[:aem][:author][:new_admin_password].nil?
   # Change admin password
   aem_user node[:aem][:author][:admin_user] do
     password node[:aem][:author][:new_admin_password]
     admin_user node[:aem][:author][:admin_user]
     admin_password node[:aem][:author][:admin_password]
+    author_protocol node[:aem][:author][:author_protocol] if node[:aem][:author][:ssl_enabled]
     port node[:aem][:author][:port]
     aem_version node[:aem][:version]
     action :set_password
@@ -103,6 +123,7 @@ node[:aem][:geometrixx_priv_users].each do |user|
   aem_user user do
     admin_user node[:aem][:author][:admin_user]
     admin_password lazy { node[:aem][:author][:admin_password] }
+    author_protocol node[:aem][:author][:author_protocol] if node[:aem][:author][:ssl_enabled]
     port node[:aem][:author][:port]
     aem_version node[:aem][:version]
     path '/home/users/geometrixx'

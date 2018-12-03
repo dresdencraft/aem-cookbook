@@ -15,3 +15,5 @@ bin/*
 .kitchen/
 
 .DS_Store
+files
+.idea

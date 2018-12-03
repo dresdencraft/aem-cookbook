@@ -1,0 +1,15 @@
+<% if @ssl_enabled %>
+org.apache.felix.https.enable="<%= @ssl_enabled %>"
+<% end %>
+<% if @ssl_port %>
+org.osgi.service.http.port.secure="<%= @ssl_port %>"
+<% end %>
+<% if @keystore_path %>
+org.apache.felix.https.keystore="<%= @keystore_path %>"
+<% end %>
+<% if @keystore_password %>
+org.apache.felix.https.keystore.password="<%= @keystore_password %>"
+<% end %>
+<% if @http_disabled %>
+org.apache.felix.http.enable=B"false"
+<% end %>
