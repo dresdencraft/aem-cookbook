@@ -21,7 +21,7 @@ actions :add, :remove
 attribute :name, kind_of: String, name_attribute: true
 attribute :local_user, kind_of: String, required: true
 attribute :local_password, kind_of: String, required: true
-attribute :local_protocol, kind_of: String, default: 'http'
+attribute :protocol, kind_of: String, default: 'http'
 attribute :local_port, kind_of: String, required: true
 attribute :remote_hosts, kind_of: Array, default: []
 attribute :dynamic_cluster, kind_of: [TrueClass, FalseClass], default: false
