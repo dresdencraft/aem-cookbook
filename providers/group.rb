@@ -24,7 +24,8 @@ def set_vars
   aem_version = new_resource.aem_version
   #By default, AEM will put groups in a folder named for their first letter (prior to AEM 6.x)
   path = new_resource.path || "/home/groups/#{group[0]}"
-  [ group, admin_user, admin_password, port, aem_version, path ]
+  protocol = new_resource.protocol
+  [ group, admin_user, admin_password, port, aem_version, path, protocol ]
 end
 
 def curl(url, user, password)
@@ -32,12 +33,13 @@ def curl(url, user, password)
   c.http_auth_types = :basic
   c.username = user
   c.password = password
+  c.ssl_verify_peer=false
   c.perform
   c
 end
 
-def get_group_path(port, group, admin_user, admin_password)
-  url = "http://localhost:#{port}/bin/querybuilder.json?path=/home/groups&1_property=rep:authorizableId&1_property.value=#{group}&p.limit=-1"
+def get_group_path(port, group, admin_user, admin_password, protocol)
+  url = "#{protocol}://localhost:#{port}/bin/querybuilder.json?path=/home/groups&1_property=rep:authorizableId&1_property.value=#{group}&p.limit=-1"
   c = curl(url, admin_user, admin_password)
   group_json = JSON.parse(c.body_str)
 
@@ -53,12 +55,12 @@ def get_group_path(port, group, admin_user, admin_password)
 end
 
 action :remove do
-  group, admin_user, admin_password, port, aem_version, path = set_vars
+  group, admin_user, admin_password, port, aem_version, path, protocol = set_vars
 
   perform_action = true
   case
   when aem_version.to_f >= 6.1
-    path = get_group_path(port, group, admin_user, admin_password)
+    path = get_group_path(port, group, admin_user, admin_password, protocol)
 
     if path.nil?
       Chef::Log.warn("Group [#{group}] doesn't exist; cannot remove group.")
@@ -80,7 +82,7 @@ action :remove do
 end
 
 action :add do
-  group, admin_user, admin_password, port, aem_version, path = set_vars
+  group, admin_user, admin_password, port, aem_version, path, protocol = set_vars
 
   perform_action = true
   case
@@ -102,13 +104,13 @@ action :add do
 end
 
 action :add_user do
-  group, admin_user, admin_password, port, aem_version, path = set_vars
+  group, admin_user, admin_password, port, aem_version, path, protocol = set_vars
   user = new_resource.user
 
   perform_action = true
   case
   when aem_version.to_f >= 6.1
-    path = get_group_path(port, group, admin_user, admin_password)
+    path = get_group_path(port, group, admin_user, admin_password, protocol)
 
     if path.nil?
       Chef::Log.warn("Group [#{group}] doesn't exist; cannot add user [#{user}] to group.")
@@ -130,13 +132,13 @@ action :add_user do
 end
 
 action :remove_user do
-  group, admin_user, admin_password, port, aem_version, path = set_vars
+  group, admin_user, admin_password, port, aem_version, path, protocol = set_vars
   user = new_resource.user
 
   perform_action = true
   case
   when aem_version.to_f >= 6.1
-    path = get_group_path(port, group, admin_user, admin_password)
+    path = get_group_path(port, group, admin_user, admin_password, protocol)
 
     if path.nil?
       Chef::Log.warn("Group [#{group}] doesn't exist; cannot remove user [#{user}] from group.")

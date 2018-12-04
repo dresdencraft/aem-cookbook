@@ -30,7 +30,8 @@ def set_vars
   # By default, AEM will put users in a folder named for their first letter (prior to AEM 6.x)
   path = new_resource.path || "/home/users/#{user[0]}"
   group = new_resource.group
-  [user, password, admin_user, admin_password, port, aem_version, path, group]
+  protocol = new_resource.protocol
+  [user, password, admin_user, admin_password, port, aem_version, path, group, protocol]
 end
 
 def curl(url, user, password)
@@ -43,8 +44,8 @@ def curl(url, user, password)
   c
 end
 
-def get_usr_path(port, user, admin_user, admin_password)
-  url_user = "#{new_resource.protocol}://localhost:#{port}/bin/querybuilder.json?path=/home/users&1_property=rep:authorizableId&1_property.value=#{user}&p.limit=-1"
+def get_usr_path(port, user, admin_user, admin_password, protocol)
+  url_user = "#{protocol}://localhost:#{port}/bin/querybuilder.json?path=/home/users&1_property=rep:authorizableId&1_property.value=#{user}&p.limit=-1"
   c = curl(url_user, admin_user, admin_password)
   usr_json = JSON.parse(c.body_str)
 
@@ -60,13 +61,13 @@ def get_usr_path(port, user, admin_user, admin_password)
 end
 
 action :set_password do
-  user, password, admin_user, admin_password, port, aem_version, path, group = set_vars
+  user, password, admin_user, admin_password, port, aem_version, path, group, protocol = set_vars
 
   perform_action = true
 
   case
   when aem_version.to_f >= 6.1
-    path = get_usr_path(port, user, admin_user, admin_password)
+    path = get_usr_path(port, user, admin_user, admin_password, protocol)
 
     if path.nil?
       Chef::Log.warn("User [#{user}] doesn't exist; cannot set password.")
@@ -85,13 +86,13 @@ action :set_password do
 end
 
 action :remove do
-  user, password, admin_user, admin_password, port, aem_version, path, group = set_vars
+  user, password, admin_user, admin_password, port, aem_version, path, group, protocol = set_vars
 
   perform_action = true
 
   case
   when aem_version.to_f >= 6.1
-    path = get_usr_path(port, user, admin_user, admin_password)
+    path = get_usr_path(port, user, admin_user, admin_password, protocol)
 
     if path.nil?
       Chef::Log.warn("User [#{user}] doesn't exist; cannot remove user.")
@@ -110,7 +111,7 @@ action :remove do
 end
 
 action :add do
-  user, password, admin_user, admin_password, port, aem_version, path, group = set_vars
+  user, password, admin_user, admin_password, port, aem_version, path, group, protocol = set_vars
 
   aem_command = AEM::Helpers.retrieve_command_for_version(node[:aem][:commands][:add_user], aem_version)
   cmd = ERB.new(aem_command).result(binding)
@@ -125,6 +126,7 @@ action :add do
       aem_group group do
         admin_user admin_user
         admin_password admin_password
+        protocol protocol
         port port
         aem_version aem_version
         user user

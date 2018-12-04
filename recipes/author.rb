@@ -193,6 +193,7 @@ end
 aem_replicator 'create_replication_agents_for_publish_servers' do
   local_user node[:aem][:author][:admin_user]
   local_password lazy { node[:aem][:author][:admin_password] }
+  protocol node[:aem][:author][:protocol] if node[:aem][:author][:ssl_enabled]
   local_port node[:aem][:author][:port]
   remote_hosts node[:aem][:author][:replication_hosts]
   dynamic_cluster node[:aem][:author][:find_replication_hosts_dynamically]
@@ -207,6 +208,7 @@ end
 aem_replicator 'replicate_to_publish_servers' do
   local_user node[:aem][:author][:admin_user]
   local_password lazy { node[:aem][:author][:admin_password] }
+  protocol node[:aem][:author][:protocol] if node[:aem][:author][:ssl_enabled]
   local_port node[:aem][:author][:port]
   remote_hosts node[:aem][:author][:replication_hosts]
   dynamic_cluster node[:aem][:author][:find_replication_hosts_dynamically]
