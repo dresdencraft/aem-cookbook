@@ -13,7 +13,7 @@ recipe 'aem::dispatcher', 'Installs AEM dispatcher Apache module.'
 supports 'centos'
 
 depends 'seven_zip', '< 3.1.0'
-depends 'apache2', '~> 5.2.1'
+depends 'apache2', '~> 3.2.2'
 depends 'ark', '~> 4.0.0'
 depends 'iptables', '~> 4.5.0'
 depends 'java'
