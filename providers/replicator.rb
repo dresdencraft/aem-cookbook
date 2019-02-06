@@ -57,8 +57,10 @@ action :add do
     log 'Finding replication hosts dynamically...'
     hosts = []
     search_criteria = AEM::Helpers.build_cluster_search_criteria(role, cluster_name)
+    Chef::Log.info("mdresden: #{search_criteria}")
     search(:node, search_criteria) do |n|
       log "Found host: #{n[:fqdn]}"
+      Chef::Log.info("mdresden: Found host: #{n[:fqdn]}")
       hosts << {
         ipaddress: n[:ipaddress],
         port: n[:aem][aem_instance][:port],
@@ -68,6 +70,7 @@ action :add do
       }
     end
     hosts.sort! { |a, b| a[:name] <=> b[:name] }
+    Chef::Log.info("mdresden: host - #{hosts}")
   end
 
   counter = 0
