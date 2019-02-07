@@ -56,17 +56,33 @@ action :add do
   if new_resource.dynamic_cluster
     log 'Finding replication hosts dynamically...'
     hosts = []
-    search_criteria = AEM::Helpers.build_cluster_search_criteria(role, cluster_name)
-    search(:node, search_criteria) do |n|
-      log "Found host: #{n[:fqdn]}"
-      hosts << {
-        ipaddress: n[:ipaddress],
-        port: n[:aem][aem_instance][:port],
-        user: n[:aem][aem_instance][:admin_user],
-        password: n[:aem][aem_instance][:admin_password],
-        name: n[:fqdn]
-      }
+    if node['aem']['publish_search_results']
+      search_results = node['aem']['publish_search_results']
+      search_results.each do |n|
+        log "Found host: #{n[:fqdn]}"
+        hosts << {
+            ipaddress: n[:ipaddress],
+            port: n[:aem][aem_instance][:port],
+            user: n[:aem][aem_instance][:admin_user],
+            password: n[:aem][aem_instance][:admin_password],
+            name: n[:fqdn]
+        }
+      end
+    else
+      search_criteria = AEM::Helpers.build_cluster_search_criteria(role, cluster_name)
+      search(:node, search_criteria) do |n|
+        log "Found host: #{n[:fqdn]}"
+        hosts << {
+            ipaddress: n[:ipaddress],
+            port: n[:aem][aem_instance][:port],
+            user: n[:aem][aem_instance][:admin_user],
+            password: n[:aem][aem_instance][:admin_password],
+            name: n[:fqdn]
+        }
+      end
     end
+
+
     hosts.sort! { |a, b| a[:name] <=> b[:name] }
   end
 
