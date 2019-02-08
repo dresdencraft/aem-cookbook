@@ -68,6 +68,7 @@ action :add do
             name: n[:fqdn]
         }
       end
+      Chef::Log.info("mdresden --> hosts: #{hosts}")
       hosts
     else
       search_criteria = AEM::Helpers.build_cluster_search_criteria(role, cluster_name)
@@ -81,6 +82,7 @@ action :add do
             name: n[:fqdn]
         }
       end
+      Chef::Log.info("mdresden --> hosts: #{hosts.sort!}")
       hosts.sort! { |a, b| a[:name] <=> b[:name] }
     end
   end

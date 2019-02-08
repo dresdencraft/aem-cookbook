@@ -42,6 +42,7 @@ default[:aem][:aem_options] = {
   'CQ_HEAP_MAX' => '384',
   'CQ_PERMGEN' => '128'
 }
+default['aem']['publish_search_results'] = nil
 
 # Enable and configure author to listen on HTTPS and optionally disable http
 default[:aem][:author][:http_disabled] = false
