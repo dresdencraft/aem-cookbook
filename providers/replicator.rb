@@ -68,6 +68,7 @@ action :add do
             name: n[:fqdn]
         }
       end
+      hosts
     else
       search_criteria = AEM::Helpers.build_cluster_search_criteria(role, cluster_name)
       search(:node, search_criteria) do |n|
@@ -80,10 +81,8 @@ action :add do
             name: n[:fqdn]
         }
       end
+      hosts.sort! { |a, b| a[:name] <=> b[:name] }
     end
-
-
-    hosts.sort! { |a, b| a[:name] <=> b[:name] }
   end
 
   counter = 0
